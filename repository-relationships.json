@@ -1,10 +1,56 @@
 {
+  "$schema": "./repository-relationships.schema.json",
+  "audience": "public",
+  "generated": {
+    "complete_for_visibility": "public",
+    "generated_at": "2026-08-05T21:07:32Z",
+    "generator_version": "2026-08-04.1",
+    "inventory_digest": "sha256:893185b67057a2153451dd77316ff286f1a1f8f73e20ef605f61c43eb30e2ca0",
+    "managed_by": "ore-repository-relationship-rollout",
+    "omitted_repository_count": 12,
+    "private_repositories_omitted": true,
+    "source": "GitHub GraphQL repository inventory plus reviewed manual declarations"
+  },
+  "owner": {
+    "account_type": "organization",
+    "dotgithub_repository": "messaging-intel/.github",
+    "github_id": "308168184",
+    "linear_project": {
+      "id": "3f6f6aea-d1aa-41a6-949e-859ffc154882",
+      "name": "github.com/messaging-intel",
+      "team_id": "eb8ab169-5afe-4b6f-9cab-3f2aa3e887dc",
+      "url": "https://linear.app/denman/project/githubcommessaging-intel-e1358db591e8",
+      "workspace": "denman"
+    },
+    "login": "messaging-intel",
+    "mapping_id": "context:messaging-intel"
+  },
+  "private_registry": {
+    "contains_non_public_inventory": true,
+    "digest": "sha256:a6a3c7d7d74550448f8fdd8cd74f3b4ea206a26aafe119ee14b2bd1e151f1df2",
+    "path": "owners/messaging-intel.json",
+    "repository": "ORESoftware/project-registry"
+  },
+  "relationships": [],
+  "repositories": [
+    {
+      "archived": false,
+      "default_branch": "main",
+      "fork": false,
+      "full_name": "messaging-intel/.github",
+      "github_id": "1324046817",
+      "name": ".github",
+      "owner": "messaging-intel",
+      "roles": [
+        "community-health",
+        "governance",
+        "relationship-registry"
+      ],
+      "source": "github-graphql-api",
+      "url": "https://github.com/messaging-intel/.github",
+      "visibility": "public"
+    }
+  ],
   "schema_version": 1,
-  "organization": "messaging-intel",
-  "generated_at": null,
-  "repositories": [],
-  "notes": [
-    "Populate from live GitHub inventory; do not infer unverified dependencies.",
-    "Repository-local manifests remain authoritative for exact dependency versions."
-  ]
+  "unresolved_hints": []
 }

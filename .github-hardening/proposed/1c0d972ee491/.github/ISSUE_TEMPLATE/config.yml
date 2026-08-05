@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security policy
+    url: https://github.com/messaging-intel/.github/security/policy
+    about: Do not post vulnerability details publicly; follow the private reporting instructions.
+  - name: Support guidance
+    url: https://github.com/messaging-intel/.github/blob/HEAD/SUPPORT.md
+    about: Review the organization-wide support guidance before filing.
+  - name: Linear planning project
+    url: https://linear.app/denman/project/githubcommessaging-intel-e1358db591e8
+    about: Internal planning and delivery context; access may be restricted.
