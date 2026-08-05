@@ -29,7 +29,7 @@
     "contains_non_public_inventory": true,
     "digest": "sha256:a6a3c7d7d74550448f8fdd8cd74f3b4ea206a26aafe119ee14b2bd1e151f1df2",
     "path": "owners/messaging-intel.json",
-    "repository": "ORESoftware/project-registry"
+    "repository": "approved-private-registry"
   },
   "relationships": [],
   "repositories": [
