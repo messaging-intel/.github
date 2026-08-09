@@ -20,6 +20,8 @@ Inspect the current branch, complete working tree, remotes, default branch, open
 
 Use read-only inspection and non-pruning synchronization such as `git status --short --branch`, `git remote -v`, `git fetch --all`, `git diff`, `git log`, `git show`, and `git blame`. Never treat a dirty worktree or inconvenient branch as permission to discard state.
 
+For ordinary integration, avoid git rebase in favor of git merge so concurrent history remains visible and recoverable.
+
 ## Mandatory semantic conflict resolution
 
 > resolve any and all git conflicts semantically, will full context, even looking back 3-10 commits in git log history for more context - never hastily pick sides in a conflict but merge things conceptually, using max context and complete conceptual awareness for a given github organization's repos and external org repos too
