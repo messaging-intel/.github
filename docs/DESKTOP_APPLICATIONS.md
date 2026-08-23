@@ -1,10 +1,10 @@
 # Desktop application allocation
 
-Verified **2026-08-06**.
+Verified **2026-08-09**.
 
 Messaging Intel requires a paired, high-performance native desktop program:
 
-- Rust: [`messaging-intel/msgint-desktop.rs`](https://github.com/messaging-intel/msgint-desktop.rs) — **planned**, not yet verified as a published repository.
+- Rust: [`messaging-intel/msgint-desktop.rs`](https://github.com/messaging-intel/msgint-desktop.rs) — **live**, with a native Makepad implementation and no WebView.
 - Flutter canonical target: [`messaging-intel/msgint-flutter`](https://github.com/messaging-intel/msgint-flutter) — **planned**, not yet verified as a published repository.
 - Flutter current implementation: [`messaging-intel/msgint-flutter-app`](https://github.com/messaging-intel/msgint-flutter-app) — **live transitional repository**, currently with verified macOS desktop coverage.
 
@@ -115,8 +115,8 @@ The Flutter rename or migration must preserve history, package identity, signing
 
 - GitHub Project: [`messaging-intel-project` — Project 1](https://github.com/orgs/messaging-intel/projects/1)
 - Linear project: `github.com/messaging-intel`
-- Central registry: [`ORESoftware/project-registry`](https://github.com/ORESoftware/project-registry/blob/main/registry/desktop-applications.json)
-- Central strategy: [`rust-desktop-strategies.md`](https://github.com/ORESoftware/project-registry/blob/main/docs/rust-desktop-strategies.md)
+- Central registry: `approved-private-registry` (opaque locator; access is restricted)
+- Central strategy: the desktop-strategy entry in `approved-private-registry`
 - Portfolio rollout: [`DEN-2469`](https://linear.app/denman/issue/DEN-2469/roll-out-paired-rust-flutter-desktop-repositories-across-the-portfolio)
 
 Repository creation, Flutter migration, toolkit changes, Chrome protocol changes, deep-link changes, connector changes, transfers, archival, or platform-status changes must update this document, Linear, the central registry/strategy, and both companion repositories together.
