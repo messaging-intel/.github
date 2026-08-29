@@ -1,0 +1,261 @@
+{
+  "schemaVersion": 1,
+  "organization": "messaging-intel",
+  "repositoryPrefix": "msgint-",
+  "repositories": [
+    "msgint-analytics",
+    "msgint-api-server.rs",
+    "msgint-chrome-extension-app",
+    "msgint-clients",
+    "msgint-connectors",
+    "msgint-desktop.rs",
+    "msgint-e2e",
+    "msgint-flutter-app",
+    "msgint-interfaces",
+    "msgint-lib-core",
+    "msgint-mcp-server.rs",
+    "msgint-monorepo",
+    "msgint-sync",
+    "msgint-web-server.rs"
+  ],
+  "requirements": [
+    {
+      "id": "continuous-integration",
+      "paths": [".github/workflows/ci.yml"]
+    },
+    {
+      "id": "agent-policy",
+      "paths": ["agents.md", "AGENTS.md"]
+    },
+    {
+      "id": "dependabot",
+      "paths": [".github/dependabot.yml"]
+    },
+    {
+      "id": "security-policy",
+      "paths": ["SECURITY.md"]
+    },
+    {
+      "id": "agents-md-guard",
+      "paths": [".github/workflows/agents-md-guard.yml"]
+    },
+    {
+      "id": "research-data-guard",
+      "paths": [".github/workflows/research-data-guard.yml"]
+    },
+    {
+      "id": "codeowners",
+      "paths": [".github/CODEOWNERS", "docs/CODEOWNERS", "CODEOWNERS"]
+    },
+    {
+      "id": "flags2env-compliance",
+      "paths": [".github/workflows/flags2env-compliance.yml"],
+      "repositories": ["msgint-api-server.rs", "msgint-connectors"]
+    }
+  ],
+  "exceptions": [
+    {
+      "repository": "msgint-desktop.rs",
+      "requirement": "dependabot",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Baseline is proposed on agent/den-3896-repository-baseline and remains absent from the default branch until review and merge."
+    },
+    {
+      "repository": "msgint-lib-core",
+      "requirement": "dependabot",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Baseline is proposed on agent/den-3896-repository-baseline and remains absent from the default branch until review and merge."
+    },
+    {
+      "repository": "msgint-desktop.rs",
+      "requirement": "security-policy",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Security policy is proposed on agent/den-3896-repository-baseline and remains absent from the default branch until review and merge."
+    },
+    {
+      "repository": "msgint-lib-core",
+      "requirement": "security-policy",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Security policy is proposed on agent/den-3896-repository-baseline and remains absent from the default branch until review and merge."
+    },
+    {
+      "repository": "msgint-desktop.rs",
+      "requirement": "agents-md-guard",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Guard is proposed on agent/den-3896-repository-baseline and remains absent from the default branch until review and merge."
+    },
+    {
+      "repository": "msgint-lib-core",
+      "requirement": "agents-md-guard",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Guard is proposed on agent/den-3896-repository-baseline and remains absent from the default branch until review and merge."
+    },
+    {
+      "repository": "msgint-flutter-app",
+      "requirement": "agents-md-guard",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Known propagation gap awaiting a repository-scoped hardening pull request."
+    },
+    {
+      "repository": "msgint-monorepo",
+      "requirement": "agents-md-guard",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Known propagation gap awaiting a repository-scoped hardening pull request."
+    },
+    {
+      "repository": "msgint-chrome-extension-app",
+      "requirement": "research-data-guard",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Capture-side repository requires a separately reviewed guard propagation change."
+    },
+    {
+      "repository": "msgint-clients",
+      "requirement": "research-data-guard",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Known propagation gap awaiting a repository-scoped hardening pull request."
+    },
+    {
+      "repository": "msgint-connectors",
+      "requirement": "research-data-guard",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Capture-side repository requires a separately reviewed guard propagation change."
+    },
+    {
+      "repository": "msgint-desktop.rs",
+      "requirement": "research-data-guard",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Guard is proposed on agent/den-3896-repository-baseline and remains absent from the default branch until review and merge."
+    },
+    {
+      "repository": "msgint-e2e",
+      "requirement": "research-data-guard",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Capture-side repository requires a separately reviewed guard propagation change."
+    },
+    {
+      "repository": "msgint-lib-core",
+      "requirement": "research-data-guard",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Guard is proposed on agent/den-3896-repository-baseline and remains absent from the default branch until review and merge."
+    },
+    {
+      "repository": "msgint-monorepo",
+      "requirement": "research-data-guard",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Known propagation gap awaiting a repository-scoped hardening pull request."
+    },
+    {
+      "repository": "msgint-analytics",
+      "requirement": "codeowners",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Organization-wide CODEOWNERS propagation is pending; enforcement also requires a paid GitHub plan decision."
+    },
+    {
+      "repository": "msgint-api-server.rs",
+      "requirement": "codeowners",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Organization-wide CODEOWNERS propagation is pending; enforcement also requires a paid GitHub plan decision."
+    },
+    {
+      "repository": "msgint-chrome-extension-app",
+      "requirement": "codeowners",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Organization-wide CODEOWNERS propagation is pending; enforcement also requires a paid GitHub plan decision."
+    },
+    {
+      "repository": "msgint-clients",
+      "requirement": "codeowners",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Organization-wide CODEOWNERS propagation is pending; enforcement also requires a paid GitHub plan decision."
+    },
+    {
+      "repository": "msgint-connectors",
+      "requirement": "codeowners",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Organization-wide CODEOWNERS propagation is pending; enforcement also requires a paid GitHub plan decision."
+    },
+    {
+      "repository": "msgint-desktop.rs",
+      "requirement": "codeowners",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "CODEOWNERS is proposed on agent/den-3896-repository-baseline and remains absent from the default branch until review and merge."
+    },
+    {
+      "repository": "msgint-e2e",
+      "requirement": "codeowners",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Organization-wide CODEOWNERS propagation is pending; enforcement also requires a paid GitHub plan decision."
+    },
+    {
+      "repository": "msgint-flutter-app",
+      "requirement": "codeowners",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Organization-wide CODEOWNERS propagation is pending; enforcement also requires a paid GitHub plan decision."
+    },
+    {
+      "repository": "msgint-interfaces",
+      "requirement": "codeowners",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Organization-wide CODEOWNERS propagation is pending; enforcement also requires a paid GitHub plan decision."
+    },
+    {
+      "repository": "msgint-lib-core",
+      "requirement": "codeowners",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "CODEOWNERS is proposed on agent/den-3896-repository-baseline and remains absent from the default branch until review and merge."
+    },
+    {
+      "repository": "msgint-mcp-server.rs",
+      "requirement": "codeowners",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Organization-wide CODEOWNERS propagation is pending; enforcement also requires a paid GitHub plan decision."
+    },
+    {
+      "repository": "msgint-monorepo",
+      "requirement": "codeowners",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Organization-wide CODEOWNERS propagation is pending; enforcement also requires a paid GitHub plan decision."
+    },
+    {
+      "repository": "msgint-sync",
+      "requirement": "codeowners",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Organization-wide CODEOWNERS propagation is pending; enforcement also requires a paid GitHub plan decision."
+    },
+    {
+      "repository": "msgint-web-server.rs",
+      "requirement": "codeowners",
+      "ticket": "DEN-3896",
+      "expiresOn": "2026-09-30",
+      "reason": "Organization-wide CODEOWNERS propagation is pending; enforcement also requires a paid GitHub plan decision."
+    }
+  ]
+}
