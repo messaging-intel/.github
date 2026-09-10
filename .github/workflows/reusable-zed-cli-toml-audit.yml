@@ -1,0 +1,142 @@
+name: Reusable Zed and CLI TOML audit
+
+on:
+  workflow_call:
+    inputs:
+      tooling_ref:
+        description: Full immutable messaging-intel/.github commit containing this workflow and audit script
+        required: true
+        type: string
+      flags2env_ref:
+        description: Full immutable flags-2-env/flags-2-env parser commit used for canonical config audit
+        required: true
+        type: string
+      require_cli_flags:
+        description: Require a repository-root .cli-flags.toml
+        required: false
+        default: false
+        type: boolean
+      require_zpkg:
+        description: Require .zpkg.toml and .zpkg.lock and run the canonical Zed package validator
+        required: false
+        default: false
+        type: boolean
+      require_no_dotenv:
+        description: Require .cli-flags.toml to disable dotenv discovery explicitly
+        required: false
+        default: false
+        type: boolean
+      require_strict_cli_channels:
+        description: Require positionals, unknown-option, and parse-error channels
+        required: false
+        default: false
+        type: boolean
+      enforce_canonical_flags_source:
+        description: Reject new ORESoftware/flags-2-env source references in flake inputs
+        required: false
+        default: true
+        type: boolean
+      enforce_generated_cargo_version:
+        description: Require generated Cargo package versions to equal package.version in .zpkg.toml
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  toml-contracts:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Validate immutable workflow inputs
+        shell: bash
+        env:
+          FLAGS2ENV_REF: ${{ inputs.flags2env_ref }}
+          TOOLING_REF: ${{ inputs.tooling_ref }}
+        run: |
+          set -euo pipefail
+          [[ "$FLAGS2ENV_REF" =~ ^[0-9a-f]{40}$ ]] || {
+            echo 'flags2env_ref must be a full lowercase commit SHA' >&2
+            exit 1
+          }
+          [[ "$TOOLING_REF" =~ ^[0-9a-f]{40}$ ]] || {
+            echo 'tooling_ref must be a full lowercase commit SHA' >&2
+            exit 1
+          }
+
+      - name: Check out caller at the exact workflow revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: consumer
+          persist-credentials: false
+          show-progress: false
+
+      - name: Check out immutable audit tooling
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: messaging-intel/.github
+          ref: ${{ inputs.tooling_ref }}
+          path: toml-audit-tooling
+          persist-credentials: false
+          show-progress: false
+
+      - name: Check out exact canonical flags-2-env parser
+        if: ${{ inputs.require_cli_flags }}
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: flags-2-env/flags-2-env
+          ref: ${{ inputs.flags2env_ref }}
+          path: flags2env-parser
+          persist-credentials: false
+          show-progress: false
+
+      - name: Run bounded repository TOML audit
+        shell: bash
+        env:
+          ENFORCE_FLAGS_SOURCE: ${{ inputs.enforce_canonical_flags_source }}
+          ENFORCE_GENERATED_CARGO_VERSION: ${{ inputs.enforce_generated_cargo_version }}
+          REQUIRE_CLI_FLAGS: ${{ inputs.require_cli_flags }}
+          REQUIRE_NO_DOTENV: ${{ inputs.require_no_dotenv }}
+          REQUIRE_STRICT_CLI_CHANNELS: ${{ inputs.require_strict_cli_channels }}
+          REQUIRE_ZPKG: ${{ inputs.require_zpkg }}
+        run: |
+          set -euo pipefail
+          args=(
+            --root consumer
+            --repository "$GITHUB_REPOSITORY"
+            --json
+          )
+          [[ "$REQUIRE_CLI_FLAGS" == true ]] && args+=(--require-cli-flags)
+          [[ "$REQUIRE_ZPKG" == true ]] && args+=(--require-zpkg)
+          [[ "$REQUIRE_NO_DOTENV" == true ]] && args+=(--require-no-dotenv)
+          [[ "$REQUIRE_STRICT_CLI_CHANNELS" == true ]] && args+=(--require-strict-cli-channels)
+          [[ "$ENFORCE_FLAGS_SOURCE" == true ]] && args+=(--enforce-canonical-flags-source)
+          [[ "$ENFORCE_GENERATED_CARGO_VERSION" == true ]] && args+=(--enforce-generated-cargo-version)
+          python3 toml-audit-tooling/scripts/audit_zed_cli_toml.py "${args[@]}" \
+            | tee "$RUNNER_TEMP/zed-cli-toml-audit.json"
+
+      - name: Run canonical flags-2-env audit
+        if: ${{ inputs.require_cli_flags }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          make -C flags2env-parser cli
+          flags2env-parser/build/flags2env audit consumer/.cli-flags.toml
+
+      - name: Retain deterministic TOML receipt
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: zed-cli-toml-audit-${{ github.event.repository.name }}-${{ github.sha }}
+          path: ${{ runner.temp }}/zed-cli-toml-audit.json
+          if-no-files-found: ignore
+          retention-days: 30
+          compression-level: 0
+          overwrite: false
+
+  zed-package:
+    if: ${{ inputs.require_zpkg }}
+    needs: toml-contracts
+    uses: zed-pkg/zed-interfaces/.github/workflows/validate-zed-package.yml@b0f7d88bd97551f001e394bb8d3629485b24022e
