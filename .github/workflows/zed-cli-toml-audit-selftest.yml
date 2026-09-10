@@ -1,0 +1,84 @@
+name: Zed and CLI TOML audit self-test
+
+on:
+  pull_request:
+    paths:
+      - "scripts/audit_zed_cli_toml.py"
+      - "tests/test_audit_zed_cli_toml.py"
+      - "docs/ZED_CLI_TOML_AUDIT.md"
+      - ".github/workflows/reusable-zed-cli-toml-audit.yml"
+      - ".github/workflows/zed-cli-toml-audit-selftest.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/audit_zed_cli_toml.py"
+      - "tests/test_audit_zed_cli_toml.py"
+      - "docs/ZED_CLI_TOML_AUDIT.md"
+      - ".github/workflows/reusable-zed-cli-toml-audit.yml"
+      - ".github/workflows/zed-cli-toml-audit-selftest.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zed-cli-toml-audit-selftest-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  self-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          show-progress: false
+
+      - name: Compile and exercise the audit implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile \
+            scripts/audit_zed_cli_toml.py \
+            tests/test_audit_zed_cli_toml.py
+          python3 -m unittest -v tests/test_audit_zed_cli_toml.py
+
+      - name: Verify immutable workflow dependencies and diff hygiene
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          bad = []
+          for path in Path('.github/workflows').glob('*zed*toml*.y*ml'):
+              for number, line in enumerate(path.read_text(encoding='utf-8').splitlines(), 1):
+                  match = re.search(r'^\s*(?:-\s+)?uses:\s*([^\s#]+)', line)
+                  if not match:
+                      continue
+                  value = match.group(1)
+                  if value.startswith('./'):
+                      continue
+                  if not re.search(r'@[0-9a-f]{40}$', value):
+                      bad.append(f'{path}:{number}: {value}')
+          if bad:
+              raise SystemExit('external workflow dependencies must use full SHAs:\n' + '\n'.join(bad))
+          PY
+          if [[ -n "${BASE_SHA:-}" ]]; then
+            git diff --check "$BASE_SHA" "$HEAD_SHA"
+          fi
+          if git grep -nEI '(gh[pousr]_[A-Za-z0-9]{20,}|lin_api_[A-Za-z0-9]{20,}|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY)' "$HEAD_SHA" -- \
+            scripts/audit_zed_cli_toml.py \
+            tests/test_audit_zed_cli_toml.py \
+            docs/ZED_CLI_TOML_AUDIT.md \
+            .github/workflows/reusable-zed-cli-toml-audit.yml \
+            .github/workflows/zed-cli-toml-audit-selftest.yml; then
+            echo 'credential-shaped content detected' >&2
+            exit 1
+          fi
