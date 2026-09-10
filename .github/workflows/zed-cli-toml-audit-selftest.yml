@@ -30,9 +30,11 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - name: Check out exact source
+      - name: Check out exact source and comparison history
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
           persist-credentials: false
           show-progress: false
 
@@ -70,7 +72,9 @@ jobs:
           if bad:
               raise SystemExit('external workflow dependencies must use full SHAs:\n' + '\n'.join(bad))
           PY
+          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
           if [[ -n "${BASE_SHA:-}" ]]; then
+            git cat-file -e "$BASE_SHA^{commit}"
             git diff --check "$BASE_SHA" "$HEAD_SHA"
           fi
           if git grep -nEI '(gh[pousr]_[A-Za-z0-9]{20,}|lin_api_[A-Za-z0-9]{20,}|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY)' "$HEAD_SHA" -- \
