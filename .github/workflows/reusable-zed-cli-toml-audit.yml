@@ -139,4 +139,4 @@ jobs:
   zed-package:
     if: ${{ inputs.require_zpkg }}
     needs: toml-contracts
-    uses: zed-pkg/zed-interfaces/.github/workflows/validate-zed-package.yml@b0f7d88bd97551f001e394bb8d3629485b24022e
+    uses: zed-pkg/zed-interfaces/.github/workflows/validate-zed-package.yml@7853815401c99a20fb7cd83e5ffd488b93abb79c
