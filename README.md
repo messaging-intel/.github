@@ -1,5 +1,7 @@
 # messaging-intel organization defaults
 
+**Policy:** [Rust for scripts; documented Python app exceptions only](CONTRIBUTING.md#rust-first-scripts-and-automation).
+
 This public `.github` repository contains organization-wide community health files, contributor guidance, shared agent policy, an explicit repository-relationship contract, and the verified planning entry point in [`PROJECTS.md`](./PROJECTS.md).
 
 Canonical planning identities:
