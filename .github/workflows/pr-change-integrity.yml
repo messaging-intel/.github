@@ -1,0 +1,46 @@
+name: PR change integrity
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  changed-lines:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout candidate without persisting credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Validate PR changes without printing private content
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          git cat-file -e "${BASE_SHA}^{commit}"
+          git cat-file -e "${HEAD_SHA}^{commit}"
+          git diff --check "$BASE_SHA" "$HEAD_SHA" --
+          git diff --no-ext-diff --no-color --unified=0 "$BASE_SHA" "$HEAD_SHA" -- |
+            awk '
+              /^\+\+\+/ { next }
+              /^\+<<<<<<<([[:space:]]|$)/ { conflict = 1 }
+              /^\+>>>>>>>[[:space:]]/ { conflict = 1 }
+              /^\+=======$/ { conflict = 1 }
+              /^\+.*-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----/ { secret = 1 }
+              /^\+/ {
+                if (match($0, /ghp_[[:alnum:]]+/) && RLENGTH >= 34) secret = 1
+                if (match($0, /github_pat_[[:alnum:]_]+/) && RLENGTH >= 45) secret = 1
+              }
+              END {
+                if (conflict) print "::error::New unresolved conflict markers" > "/dev/stderr"
+                if (secret) print "::error::New credential-like material" > "/dev/stderr"
+                if (conflict || secret) exit 1
+              }'
