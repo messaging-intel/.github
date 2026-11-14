@@ -25,15 +25,25 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
+          [[ "$BASE_SHA" =~ ^[0-9a-f]{40}$ ]] && [[ "$HEAD_SHA" =~ ^[0-9a-f]{40}$ ]] || {
+            echo "::error::Invalid commit reference"
+            exit 1
+          }
           git cat-file -e "${BASE_SHA}^{commit}"
           git cat-file -e "${HEAD_SHA}^{commit}"
-          git diff --check "$BASE_SHA" "$HEAD_SHA" --
-          git diff --no-ext-diff --no-color --unified=0 "$BASE_SHA" "$HEAD_SHA" -- |
+          MERGE_BASE="$(git merge-base "$BASE_SHA" "$HEAD_SHA")"
+          # Do not print changed source lines: they can contain private data.
+          if ! git diff --check "$MERGE_BASE" "$HEAD_SHA" -- >/dev/null 2>&1; then
+            echo "::error::New whitespace defect or conflict marker"
+            exit 1
+          fi
+          git diff --no-ext-diff --no-color --unified=0 "$MERGE_BASE" "$HEAD_SHA" -- |
             awk '
               /^\+\+\+/ { next }
               /^\+<<<<<<<([[:space:]]|$)/ { conflict = 1 }
               /^\+>>>>>>>[[:space:]]/ { conflict = 1 }
               /^\+=======$/ { conflict = 1 }
+              /^\+\|\|\|\|\|\|\|([[:space:]]|$)/ { conflict = 1 }
               /^\+.*-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----/ { secret = 1 }
               /^\+/ {
                 if (match($0, /ghp_[[:alnum:]]+/) && RLENGTH >= 34) secret = 1
