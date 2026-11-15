@@ -62,6 +62,14 @@ Edit authoritative sources rather than generated mirrors, vendored copies, cache
 
 Never print, log, commit, paste into issues, include in fixtures, or expose tokens, passwords, private keys, session material, database URLs, customer data, legal records, private health data, production data, or unpublished security details. Use approved secret stores, placeholders, and redacted diagnostics.
 
+## Rust-first testing and repository automation
+
+New executable regression checks, repository validators, CI admission gates, security audits, code generators, and durable automation **must be implemented in Rust, not Python**. Prefer a small documented Cargo crate with `cargo test`, synthetic positive/negative fixtures, bounded inputs, redacted diagnostics, and pinned dependencies.
+
+Do not introduce new `.py` tooling, `python`/`python3` workflow steps, or Python one-liners as an alternative to a Rust test/check. Existing Python tooling is migration debt, not a precedent: before replacing it, capture its CLI/output/exit-code behavior and both valid and adversarial golden cases; only retire it with demonstrated Rust parity. Cross-language product tests may retain their native runtimes where needed; do not mislabel a synthetic Rust harness as a full TypeScript, Dart, Flutter, or service integration run.
+
+A CI workflow with zero executed steps is an admission failure rather than evidence of passing tests. When using a private alternate runner, mirror exact source Git blobs, verify SHAs before reporting results, and do not bypass required independent review or source CI.
+
 ## Pull requests, validation, and evidence
 
 Use focused branches and pull requests. Link the relevant Linear issue or project. Explain behavior, risks, migration and roll-forward considerations, security impact, tests run, conflicts and their semantic resolution, and cross-repository dependencies. Never report a branch, commit, pull request, merge, deployment, test run, or external update as complete without authoritative remote evidence.
